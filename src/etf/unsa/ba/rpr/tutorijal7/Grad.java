@@ -2,12 +2,20 @@ package etf.unsa.ba.rpr.tutorijal7;
 
 import java.io.Serializable;
 
+
 public class Grad implements Serializable {
     private String naziv;
-    private int brojStanovnika;
+    private int brojStanovnika, vel;
     private double []temperature = new double[1000];
 
     public Grad() {}
+
+    public Grad (String naziv, int brojStanovnika, int vel, double []temperature) {
+        setNaziv(naziv);
+        setBrojStanovnika(brojStanovnika);
+        setVel(vel);
+        setTemperature(temperature);
+    }
 
     public String getNaziv() {
         return naziv;
@@ -15,6 +23,14 @@ public class Grad implements Serializable {
 
     public void setNaziv(String naziv) {
         this.naziv = naziv;
+    }
+
+    public int getVel() {
+        return vel;
+    }
+
+    public void setVel(int vel) {
+        this.vel = vel;
     }
 
     public int getBrojStanovnika() {
