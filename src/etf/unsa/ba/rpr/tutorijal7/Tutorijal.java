@@ -7,8 +7,10 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -36,28 +38,14 @@ public class Tutorijal {
                     break;
                 }
             }
-             if(ulaz.hasNext()) ulaz.next();
+            if(ulaz.hasNext()) ulaz.next();
             gradovi.add(new Grad(imeGrada, 0, vel, temperature));
         }
         ulaz.close();
         return gradovi;
     }
 
-    public static void ucitajElemente(Element element, UN un, ArrayList<Grad> gradovi) {
-
-    }
-
     public static UN ucitajXml(ArrayList<Grad> gradovi) {
-        /*
-        Tako učitane države se pohranjuju u klasu UN te se ta klasa
-        vraća iz funkcije. Osim toga, funkcija kao parametar prima
-        ArrayList<Grad> iz prethodnog zadatka, te u svaki grad koji
-        se nalazi u datoteci drzave.xml dodaje mjerenja koja se nalaze na
-        listi. Grad se smatra da je identičan ako je njegov naziv identičan.
-        Za gradove koji se nalaze u listi a ne nalaze u datoteci (i obrnuto)
-        ne treba raditi ništa.
-        */
-        UN un = new UN();
         Document xmldoc = null;
         try {
             DocumentBuilder docReader
@@ -68,21 +56,69 @@ public class Tutorijal {
             System.out.println("drzave.xml nije validan XML dokument");
             //return;
         }
-        Element korijen = null;
-        if (xmldoc != null) {
-            korijen = xmldoc.getDocumentElement();
+
+        UN un = new UN();
+        ArrayList<Drzava> drzave = new ArrayList<>();
+
+        NodeList xmlDrzave = xmldoc.getElementsByTagName("drzava");
+
+        for(int i = 0; i < xmlDrzave.getLength(); i++) {
+            Node drzavaNode = xmlDrzave.item(i);
+
+            if(drzavaNode instanceof Element) {
+                Element drzava = (Element)drzavaNode;
+
+                int stanovnika = Integer.parseInt(drzava.getAttribute("brojStanovnika"));
+                String naziv = drzava.getElementsByTagName("naziv").item(0).getTextContent();
+
+                Element povrsinaXml = (Element)drzava.getElementsByTagName("povrsina").item(0);
+                String jedinica = povrsinaXml.getAttribute("jedinicaZaPovrsinu");
+                double povrsina = Double.parseDouble(drzava.getElementsByTagName("povrsina").item(0).getTextContent());
+
+                Element glavniGradXml = (Element)drzava.getElementsByTagName("glavnigrad").item(0);
+                int gStanovnika = Integer.parseInt(glavniGradXml.getAttribute("brojStanovnika"));
+                String nazivGrada = glavniGradXml.getTextContent().trim();
+
+                Grad glavniGrad = new Grad(nazivGrada, gStanovnika, 0, null);
+                drzave.add(new Drzava(naziv, stanovnika, povrsina, jedinica, glavniGrad));
+            }
         }
-        ucitajElemente(korijen, un, gradovi);
+        un.setDrzave(drzave);
         return un;
     }
 
+    public static void zapisiXml(UN un) {
+        try {
+            XMLEncoder izlaz = new XMLEncoder(new FileOutputStream("un.xml"));
+            izlaz.writeObject(un);
+            izlaz.close();
+        } catch(Exception e) {
+            System.out.println("Greška: " + e);
+        }
+    }
+
     public static void main(String[] args) {
+
         ArrayList<Grad> grads = ucitajGradove();
-         for(int i = 0; i < grads.size(); i++) {
+        /*
+        for(int i = 0; i < grads.size(); i++) {
             System.out.print(grads.get(i).getNaziv() + " " + grads.get(i).getBrojStanovnika() + " ");
             for(int j = 0; j < grads.get(i).getVel(); j++)
                 System.out.print(grads.get(i).getTemperature()[j] + " ");
             System.out.println();
         }
+
+        ArrayList<Drzava> drzave = new ArrayList<>();
+        drzave.add(new Drzava("BiH", 3500000, (double)51129, "km2", grads.get(0)));
+        UN un = new UN();
+        un.setDrzave(drzave);
+        zapisiXml(un);
+        */
+
+        UN un = ucitajXml(grads);
+        for(Drzava drzava : un.getDrzave()) {
+            System.out.println(drzava);
+        }
+
     }
 }

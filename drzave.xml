@@ -2,41 +2,19 @@
 
 <drzave>
 
-    <drzava>
+    <drzava brojStanovnika="3500000">
         <naziv>Bosna i Hercegovina</naziv>
-        <brojStanovnika>3500000</brojStanovnika>
         <povrsina jedinicaZaPovrsinu="km2">51129</povrsina>
-        <moneta naziv="KM" />
         <glavnigrad brojStanovnika="400000">
             <naziv>Sarajevo</naziv>
-            <vel>5</vel>
-            <temperature>
-                <double>5.4</double>
-                <double>15.8</double>
-                <double>2.3</double>
-                <double>0.44</double>
-                <double>-1.11</double>
-            </temperature>
         </glavnigrad>
     </drzava>
 
-    <drzava>
+    <drzava brojStanovnika = "1700000">
         <naziv>Srbija</naziv>
-        <brojStanovnika>7000000</brojStanovnika>
         <povrsina jedinicaZaPovrsinu="km2">88499</povrsina>
-        <moneta naziv="DIN"/>
         <glavnigrad brojStanovnika="1700000">
             <naziv>Beograd</naziv>
-            <vel>6</vel>
-            <temperature>
-                <double>5.2</double>
-                <double>13.1</double>
-                <double>4.5</double>
-                <double>0.25</double>
-                <double>-2.87</double>
-                <double>-8.11</double>
-            </temperature>
         </glavnigrad>
     </drzava>
-
 </drzave>
